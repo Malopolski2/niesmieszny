@@ -197,7 +197,6 @@ func chessRatings() string {
 	ratings := []string{
 		"<:Blunder:1517582398374674582>",
 		"<:Blunder:1517582398374674582>",
-		"<:Blunder:1517582398374674582>",
 		"<:Best:1520800747246063746>",
 		"<:Best:1520800747246063746>",
 		"<:Mistake:1520800166204936243>",
@@ -222,10 +221,8 @@ func readImage(path string, fileName string) (*discordgo.File, func(), error) {
 		Name:   fileName,
 		Reader: file,
 	}
-
 	cleanup := func() {
 		_ = file.Close()
 	}
-
 	return bettyImage, cleanup, nil
 }
