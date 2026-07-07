@@ -31,6 +31,10 @@ var commands = []*discordgo.ApplicationCommand{
 			},
 		},
 	},
+	{
+		Name:        "kashira",
+		Description: "I suppose bro",
+	},
 }
 
 func main() {
@@ -136,6 +140,44 @@ func interactionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			}
 			fmt.Println(question)
 		}
+
+		if commandData.Name == "kashira" {
+			filepaths := []string{
+				"bettyrezero/angry.jpg",
+				"bettyrezero/aura.jpg",
+				"bettyrezero/goober.jpg",
+				"bettyrezero/huh.jpg",
+				"bettyrezero/kashirabro.jpg",
+				"bettyrezero/pout.jpg",
+				"bettyrezero/what.jpg",
+			}
+			filenames := []string{
+				"angry.jpg",
+				"aura.jpg",
+				"goober.jpg",
+				"huh.jpg",
+				"kashirabro.jpg",
+				"pout.jpg",
+				"what.jpg",
+			}
+			imageID := rand.Intn(len(filenames))
+
+			bettyImage, cleanup, err := readImage(filepaths[imageID], filenames[imageID])
+			if err != nil {
+				fmt.Println(err)
+			}
+			defer cleanup()
+
+			err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Files: []*discordgo.File{bettyImage},
+				},
+			})
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
 	}
 }
 
@@ -169,4 +211,21 @@ func chessRatings() string {
 		"<:Brilliant:1517582607448281198>",
 	}
 	return ratings[rand.Intn(len(ratings))]
+}
+
+func readImage(path string, fileName string) (*discordgo.File, func(), error) {
+	file, err := os.Open(path)
+	if err != nil {
+		fmt.Println(err)
+	}
+	bettyImage := &discordgo.File{
+		Name:   fileName,
+		Reader: file,
+	}
+
+	cleanup := func() {
+		_ = file.Close()
+	}
+
+	return bettyImage, cleanup, nil
 }
