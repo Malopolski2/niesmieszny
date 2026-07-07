@@ -2,12 +2,36 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
 )
+
+var commands = []*discordgo.ApplicationCommand{
+	{
+		Name:        "aremyparentsproudofme",
+		Description: "Ask and find out!",
+	},
+	{
+		Name:        "info",
+		Description: "Information about the bot!",
+	},
+	{
+		Name:        "ben",
+		Description: "Ben.",
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:        discordgo.ApplicationCommandOptionString,
+				Name:        "question",
+				Description: "Question you want to ask Ben",
+				Required:    true,
+			},
+		},
+	},
+}
 
 func main() {
 	discord, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
@@ -18,6 +42,7 @@ func main() {
 	discord.Identify.Intents = discordgo.IntentsGuildMessages | discordgo.IntentsMessageContent
 
 	discord.AddHandler(messageCreate)
+	discord.AddHandler(interactionCreate)
 
 	err = discord.Open()
 	if err != nil {
@@ -30,6 +55,15 @@ func main() {
 		}
 	}(discord)
 	fmt.Println("Nieśmieszny jest online")
+
+	registeredCommands := make([]*discordgo.ApplicationCommand, len(commands))
+	for i, v := range commands {
+		cmd, err := discord.ApplicationCommandCreate(discord.State.User.ID, "", v)
+		if err != nil {
+			fmt.Println(err)
+		}
+		registeredCommands[i] = cmd
+	}
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
@@ -47,4 +81,61 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 	}
+}
+
+func interactionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	if i.Type == discordgo.InteractionApplicationCommand {
+		commandData := i.ApplicationCommandData()
+
+		if commandData.Name == "info" {
+			err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "(this description will change later) \n Hello my name is Nieśmieszny your favorite slop YouTuber, I used to make shitty daily animations about stuff with no research, also I once accidently promoted drugs to children, oh and im doing Minecraft now",
+				},
+			})
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+
+		if commandData.Name == "aremyparentsproudofme" {
+			err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "No.",
+				},
+			})
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+
+		if commandData.Name == "ben" {
+			question := commandData.Options[0].StringValue()
+			reply := benQuestion()
+			err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "Your question was: " + question + "\n\n" + reply,
+				},
+			})
+			if err != nil {
+				fmt.Println(err)
+			}
+			fmt.Println(question)
+		}
+	}
+}
+
+// Functions outside discordgo but used for the commands
+
+func benQuestion() string {
+	responses := []string{
+		"Yes",
+		"No",
+		"Hohoho",
+		"Ughhhh",
+	}
+	return responses[rand.Intn(len(responses))]
 }
