@@ -76,7 +76,18 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if m.Content == "ping" {
-		_, err := s.ChannelMessageSend(m.ChannelID, "Skibidi rizz")
+		_, err := s.ChannelMessageSend(m.ChannelID, "Skibidi Rizz")
+		if err != nil {
+			return
+		}
+	}
+
+	if m.Content == "!isthisablunder" {
+		message := &discordgo.MessageSend{
+			Content:   chessRatings(),
+			Reference: m.MessageReference,
+		}
+		_, err := s.ChannelMessageSendComplex(m.ChannelID, message)
 		if err != nil {
 			return
 		}
@@ -138,4 +149,24 @@ func benQuestion() string {
 		"Ughhhh",
 	}
 	return responses[rand.Intn(len(responses))]
+}
+
+func chessRatings() string {
+	ratings := []string{
+		"<:Blunder:1517582398374674582>",
+		"<:Blunder:1517582398374674582>",
+		"<:Blunder:1517582398374674582>",
+		"<:Best:1520800747246063746>",
+		"<:Best:1520800747246063746>",
+		"<:Mistake:1520800166204936243>",
+		"<:Mistake:1520800166204936243>",
+		"<:Excellent:1521240041823666306>",
+		"<:Excellent:1521240041823666306>",
+		"<:Bookmove:1520799464057733373>",
+		"<:Bookmove:1520799464057733373>",
+		"<:Great:1520800903504990339>",
+		"<:Great:1520800903504990339>",
+		"<:Brilliant:1517582607448281198>",
+	}
+	return ratings[rand.Intn(len(ratings))]
 }
