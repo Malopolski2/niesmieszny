@@ -86,7 +86,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	}
 
-	if m.Content == "!isthisablunder" {
+	if m.Content == "!review" {
 		message := &discordgo.MessageSend{
 			Content:   chessRatings(),
 			Reference: m.MessageReference,
