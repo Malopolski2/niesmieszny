@@ -248,6 +248,9 @@ func interactionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 		if commandData.Name == "review" {
 			if i.GuildID == "" {
+				commandData := i.ApplicationCommandData()
+				targetID := commandData.TargetID
+				messageContent := commandData.Resolved.Messages[targetID]
 				filepaths := []string{
 					"chessratings/best.webp",
 					"chessratings/best.webp",
@@ -287,7 +290,7 @@ func interactionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				errr := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
-						Content: "Reviewing the message...",
+						Content: "Reviewing the message... (" + messageContent.Content + ")",
 						Files:   []*discordgo.File{chessRating},
 					},
 				})
