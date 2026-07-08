@@ -14,10 +14,28 @@ var commands = []*discordgo.ApplicationCommand{
 	{
 		Name:        "aremyparentsproudofme",
 		Description: "Ask and find out!",
+		IntegrationTypes: &[]discordgo.ApplicationIntegrationType{
+			discordgo.ApplicationIntegrationGuildInstall,
+			discordgo.ApplicationIntegrationUserInstall,
+		},
+		Contexts: &[]discordgo.InteractionContextType{
+			discordgo.InteractionContextGuild,
+			discordgo.InteractionContextBotDM,
+			discordgo.InteractionContextPrivateChannel,
+		},
 	},
 	{
 		Name:        "info",
 		Description: "Information about the bot!",
+		IntegrationTypes: &[]discordgo.ApplicationIntegrationType{
+			discordgo.ApplicationIntegrationGuildInstall,
+			discordgo.ApplicationIntegrationUserInstall,
+		},
+		Contexts: &[]discordgo.InteractionContextType{
+			discordgo.InteractionContextGuild,
+			discordgo.InteractionContextBotDM,
+			discordgo.InteractionContextPrivateChannel,
+		},
 	},
 	{
 		Name:        "ben",
@@ -30,10 +48,28 @@ var commands = []*discordgo.ApplicationCommand{
 				Required:    true,
 			},
 		},
+		IntegrationTypes: &[]discordgo.ApplicationIntegrationType{
+			discordgo.ApplicationIntegrationGuildInstall,
+			discordgo.ApplicationIntegrationUserInstall,
+		},
+		Contexts: &[]discordgo.InteractionContextType{
+			discordgo.InteractionContextGuild,
+			discordgo.InteractionContextBotDM,
+			discordgo.InteractionContextPrivateChannel,
+		},
 	},
 	{
 		Name:        "kashira",
 		Description: "I suppose bro",
+		IntegrationTypes: &[]discordgo.ApplicationIntegrationType{
+			discordgo.ApplicationIntegrationGuildInstall,
+			discordgo.ApplicationIntegrationUserInstall,
+		},
+		Contexts: &[]discordgo.InteractionContextType{
+			discordgo.InteractionContextGuild,
+			discordgo.InteractionContextBotDM,
+			discordgo.InteractionContextPrivateChannel,
+		},
 	},
 }
 
