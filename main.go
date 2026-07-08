@@ -71,6 +71,19 @@ var commands = []*discordgo.ApplicationCommand{
 			discordgo.InteractionContextPrivateChannel,
 		},
 	},
+	{
+		Name: "review",
+		Type: discordgo.MessageApplicationCommand,
+		IntegrationTypes: &[]discordgo.ApplicationIntegrationType{
+			discordgo.ApplicationIntegrationGuildInstall,
+			discordgo.ApplicationIntegrationUserInstall,
+		},
+		Contexts: &[]discordgo.InteractionContextType{
+			discordgo.InteractionContextGuild,
+			discordgo.InteractionContextBotDM,
+			discordgo.InteractionContextPrivateChannel,
+		},
+	},
 }
 
 func main() {
@@ -230,6 +243,79 @@ func interactionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			})
 			if err != nil {
 				fmt.Println(err)
+			}
+		}
+
+		if commandData.Name == "review" {
+			if i.GuildID == "" {
+				filepaths := []string{
+					"chessratings/best.webp",
+					"chessratings/best.webp",
+					"chessratings/blunder.webp",
+					"chessratings/blunder.webp",
+					"chessratings/book.webp",
+					"chessratings/book.webp",
+					"chessratings/brilliant.webp",
+					"chessratings/excellent.webp",
+					"chessratings/excellent.webp",
+					"chessratings/great.webp",
+					"chessratings/great.webp",
+					"chessratings/mistake.webp",
+					"chessratings/mistake.webp",
+				}
+				filenames := []string{
+					"best.webp",
+					"best.webp",
+					"blunder.webp",
+					"blunder.webp",
+					"book.webp",
+					"book.webp",
+					"brilliant.webp",
+					"excellent.webp",
+					"excellent.webp",
+					"great.webp",
+					"great.webp",
+					"mistake.webp",
+					"mistake.webp",
+				}
+				imageID := rand.Intn(len(filepaths))
+				chessRating, cleanup, err := readImage(filepaths[imageID], filenames[imageID])
+				defer cleanup()
+				if err != nil {
+					fmt.Println(err)
+				}
+				errr := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "Reviewing the message...",
+						Files:   []*discordgo.File{chessRating},
+					},
+				})
+				if errr != nil {
+					fmt.Println(errr)
+				}
+
+			} else {
+				reviewedMessage := &discordgo.MessageReference{
+					MessageID: i.ApplicationCommandData().TargetID,
+					ChannelID: i.ChannelID,
+				}
+				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "Reviewing the message...",
+					},
+				})
+				if err != nil {
+					fmt.Println(err)
+				}
+				_, errr := s.ChannelMessageSendComplex(i.ChannelID, &discordgo.MessageSend{
+					Content:   chessRatings(),
+					Reference: reviewedMessage,
+				})
+				if errr != nil {
+					fmt.Println(errr)
+				}
 			}
 		}
 	}
