@@ -150,6 +150,15 @@ func interactionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				"bettyrezero/kashirabro.jpg",
 				"bettyrezero/pout.jpg",
 				"bettyrezero/what.jpg",
+				"bettyrezero/casual.jpg",
+				"bettyrezero/cat.jpg",
+				"bettyrezero/choose.jpg",
+				"bettyrezero/cinema.jpg",
+				"bettyrezero/happyyay.jpg",
+				"bettyrezero/holding.jpg",
+				"bettyrezero/read.jpg",
+				"bettyrezero/sit.jpg",
+				"bettyrezero/silly.jpg",
 			}
 			filenames := []string{
 				"angry.jpg",
@@ -159,6 +168,15 @@ func interactionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				"kashirabro.jpg",
 				"pout.jpg",
 				"what.jpg",
+				"casual.jpg",
+				"cat.jpg",
+				"choose.jpg",
+				"cinema.jpg",
+				"happyyay.jpg",
+				"holding.jpg",
+				"read.jpg",
+				"sit.jpg",
+				"silly.jpg",
 			}
 			imageID := rand.Intn(len(filenames))
 
