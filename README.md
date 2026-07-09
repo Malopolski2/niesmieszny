@@ -1,0 +1,1 @@
+This is my first Discord bot written in Go! It has few commands like Talking Ben, reviewing a message like a chess move and random pictures of Beatrice from Re:Zero. If you ever use it for anything, please just credit this repo, thanks!
