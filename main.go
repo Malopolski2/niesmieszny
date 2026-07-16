@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"math/rand"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -74,6 +77,19 @@ var commands = []*discordgo.ApplicationCommand{
 	{
 		Name: "review",
 		Type: discordgo.MessageApplicationCommand,
+		IntegrationTypes: &[]discordgo.ApplicationIntegrationType{
+			discordgo.ApplicationIntegrationGuildInstall,
+			discordgo.ApplicationIntegrationUserInstall,
+		},
+		Contexts: &[]discordgo.InteractionContextType{
+			discordgo.InteractionContextGuild,
+			discordgo.InteractionContextBotDM,
+			discordgo.InteractionContextPrivateChannel,
+		},
+	},
+	{
+		Name:        "randomshrekquote",
+		Description: "Returns a random shrek quote, what else did you expect",
 		IntegrationTypes: &[]discordgo.ApplicationIntegrationType{
 			discordgo.ApplicationIntegrationGuildInstall,
 			discordgo.ApplicationIntegrationUserInstall,
@@ -319,6 +335,34 @@ func interactionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				if errr != nil {
 					fmt.Println(errr)
 				}
+			}
+		}
+
+		if commandData.Name == "randomshrekquote" {
+			res, err := http.Get("https://shrekofficial.com/0/quotes/random")
+			if err != nil {
+				fmt.Println("Error:", err)
+				return
+			}
+			defer func(Body io.ReadCloser) {
+				err := Body.Close()
+				if err != nil {
+					fmt.Println("Error:", err)
+				}
+			}(res.Body)
+			var randomQuote string
+			decoder := json.NewDecoder(res.Body)
+			if err := decoder.Decode(&randomQuote); err != nil {
+				fmt.Println(err)
+			}
+			err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: randomQuote,
+				},
+			})
+			if err != nil {
+				fmt.Println(err)
 			}
 		}
 	}
