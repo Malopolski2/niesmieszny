@@ -224,7 +224,7 @@ func interactionCreate(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				"bettyrezero/read.jpg",
 				"bettyrezero/sit.jpg",
 				"bettyrezero/silly.jpg",
-				"bettyrezeo/systems.jpg",
+				"bettyrezero/systems.jpg",
 			}
 			filenames := []string{
 				"angry.jpg",
